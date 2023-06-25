@@ -13,26 +13,27 @@ scores.each do |s|
   end
 end
 
-frames = []
-shots.each_slice(2) do |s|
-  frames << s
-end
+frames = shots.each_slice(2).to_a
 
 point = 0
-frames.each_with_index do |frame, idx|
+frames.each.with_index(1) do |frame, idx|
   point += frame.sum
 
-  if idx + 1 < 10
-    if frame[0] == 10 # strike:次の2投を加算する
-      if frames[idx + 1][0] == 10 # 次の1投目でstrike
-        point += frames[idx + 1][0]
-        point += frames[idx + 2][0]
+  if idx < 10
+    next_frame = frames[idx]
+    second_next_frame = frames[idx + 1]
+
+    if frame[0] == 10
+      if next_frame[0] == 10
+        point += next_frame[0]
+        point += second_next_frame[0]
       else
-        point += frames[idx + 1].sum
+        point += next_frame.sum
       end
-    elsif frame.sum == 10 # spare:次の１投を加算する
-      point += frames[idx + 1][0]
+    elsif frame.sum == 10
+      point += next_frame[0]
     end
   end
 end
+
 puts point
