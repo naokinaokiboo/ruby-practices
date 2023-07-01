@@ -1,10 +1,13 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'optparse'
+
 MAX_COLUMNS = 3
 TERMINAL_WIDTH = `tput cols`.to_i
 
 def main
+  opt_params = ARGV.getopts('a')
   targets_for_disp = ARGV.empty? ? [Dir.pwd] : ARGV.sort!
 
   existent_targets, noexistent_targets = targets_for_disp.partition { |target| File.exist?(target) }
@@ -16,7 +19,7 @@ def main
 
   directories.each do |directory|
     puts "\n#{directory}:" if targets_for_disp.size > 1
-    entries = Dir.entries(directory).delete_if { |entry| entry[0] == '.' }.sort!
+    entries = get_entries(directory, opt_params['a'])
     display(entries)
   end
 end
@@ -44,6 +47,10 @@ end
 def ljust_for_mbchar(str, width)
   num_of_mbchar = str.split('').count { |char| char.match?(/[^ -~｡-ﾟ]/) }
   str.ljust(width - num_of_mbchar)
+end
+
+def get_entries(directory, disp_all)
+  Dir.entries(directory).delete_if { |entry| !disp_all && entry[0] == '.' }.sort!
 end
 
 main
