@@ -8,9 +8,9 @@ TERMINAL_WIDTH = `tput cols`.to_i
 
 def main
   opt_params = ARGV.getopts('a')
-  targets_for_disp = ARGV.empty? ? [Dir.pwd] : ARGV.sort!
+  targets = ARGV.empty? ? [Dir.pwd] : ARGV.sort
 
-  existent_targets, noexistent_targets = targets_for_disp.partition { |target| File.exist?(target) }
+  existent_targets, noexistent_targets = targets.partition { |target| File.exist?(target) }
   directories, files = existent_targets.partition { |target| File.ftype(target) == 'directory' }
 
   noexistent_targets.each { |target| puts "ls: #{target}: No such file or directory" }
@@ -18,7 +18,7 @@ def main
   display(files)
 
   directories.each do |directory|
-    puts "\n#{directory}:" if targets_for_disp.size > 1
+    puts "\n#{directory}:" if targets.size > 1
     entries = get_entries(directory, opt_params['a'])
     display(entries)
   end
@@ -50,7 +50,7 @@ def ljust_for_mbchar(str, width)
 end
 
 def get_entries(directory, disp_all)
-  Dir.entries(directory).delete_if { |entry| !disp_all && entry[0] == '.' }.sort!
+  Dir.entries(directory).delete_if { |entry| !disp_all && entry[0] == '.' }.sort
 end
 
 main
