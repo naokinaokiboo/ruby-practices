@@ -7,11 +7,12 @@ MAX_COLUMNS = 3
 TERMINAL_WIDTH = `tput cols`.to_i
 
 def main
-  opt_params = ARGV.getopts('a')
+  opt_params = ARGV.getopts('ar')
   targets = ARGV.empty? ? [Dir.pwd] : ARGV.sort
 
   existent_targets, noexistent_targets = targets.partition { |target| File.exist?(target) }
   directories, files = existent_targets.partition { |target| File.ftype(target) == 'directory' }
+  files = sort_with_reverse_option(files, opt_params['r'])
 
   noexistent_targets.each { |target| puts "ls: #{target}: No such file or directory" }
 
@@ -20,6 +21,7 @@ def main
   directories.each do |directory|
     puts "\n#{directory}:" if targets.size > 1
     entries = get_entries(directory, opt_params['a'])
+    entries = sort_with_reverse_option(entries, opt_params['r'])
     display(entries)
   end
 end
@@ -51,6 +53,10 @@ end
 
 def get_entries(directory, disp_all)
   Dir.entries(directory).delete_if { |entry| !disp_all && entry[0] == '.' }.sort
+end
+
+def sort_with_reverse_option(array, reverse)
+  reverse ? array.sort.reverse : array.sort
 end
 
 main
