@@ -102,7 +102,6 @@ end
 def generate_file_stat_hash(files, directory)
   file_stat_hash = {}
   files.each do |file|
-    # file_stat = File::Stat.new(directory.nil? ? file : [directory, file].join('/'))
     file_stat = File.lstat(directory.nil? ? file : [directory, file].join('/'))
     file_stat_hash[file] = file_stat
   end
