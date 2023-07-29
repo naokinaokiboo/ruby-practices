@@ -42,17 +42,17 @@ def main
 
   noexistent_targets.each { |target| puts "ls: #{target}: No such file or directory" }
 
-  dispatch_disp_format(sorted_files, opt_params['l'])
+  call_disp_functions(sorted_files, opt_params['l'])
 
   directories.each do |directory|
     puts "\n#{directory}:" if targets.size > 1
     entries = get_entries(directory, opt_params['a'])
     sorted_entries = sort_with_reverse_option(entries, opt_params['r'])
-    dispatch_disp_format(sorted_entries, opt_params['l'], directory)
+    call_disp_functions(sorted_entries, opt_params['l'], directory)
   end
 end
 
-def dispatch_disp_format(files, long_format, directory = nil)
+def call_disp_functions(files, long_format, directory = nil)
   if long_format
     display_with_long_format(files, directory)
   else
@@ -94,71 +94,65 @@ def sort_with_reverse_option(array, reverse)
 end
 
 def display_with_long_format(files, directory)
-  file_stat_hash = generate_file_stat_hash(files, directory)
-  output_total_block_size(file_stat_hash) unless directory.nil?
-  output_with_detail_info(file_stat_hash, directory)
+  file_stats = generate_file_stat_hash(files, directory)
+  output_total_block_size(file_stats) unless directory.nil?
+  output_with_detail_info(file_stats, directory)
 end
 
 def generate_file_stat_hash(files, directory)
-  file_stat_hash = {}
-  files.each do |file|
-    file_stat = File.lstat(directory.nil? ? file : [directory, file].join('/'))
-    file_stat_hash[file] = file_stat
+  files.each_with_object({}) do |file, hash|
+    hash[file] = File.lstat(directory.nil? ? file : [directory, file].join('/'))
   end
-  file_stat_hash
 end
 
-def output_total_block_size(file_stat_hash)
-  total_blocks = 0
-  file_stat_hash.each do |_file, file_stat|
-    total_blocks += file_stat.blocks
-  end
+def output_total_block_size(file_stats)
+  total_blocks = file_stats.values.inject(0) { |result, file_stat| result + file_stat.blocks }
   puts "total #{total_blocks}"
 end
 
-def output_with_detail_info(file_stat_hash, directory)
-  return if file_stat_hash.empty?
+def output_with_detail_info(file_stats, directory)
+  return if file_stats.empty?
 
-  nlink_length = get_max_length_nlink(file_stat_hash)
-  owner_name_length = get_max_length_owner_name(file_stat_hash)
-  group_name_length = get_max_length_group_name(file_stat_hash)
-  file_size_length = get_max_length_file_size(file_stat_hash)
+  nlink_length = get_max_length_nlink(file_stats)
+  owner_name_length = get_max_length_owner_name(file_stats)
+  group_name_length = get_max_length_group_name(file_stats)
+  file_size_length = get_max_length_file_size(file_stats)
 
   delimiter = ' '
-  file_stat_hash.each do |file, file_stat|
-    detail_string = get_file_type_char(file_stat.mode)
-    detail_string += get_perission_str(file_stat.mode)
+  file_stats.each do |file, file_stat|
+    detail_string = +get_file_type_char(file_stat.mode)
+    detail_string << get_perission_str(file_stat.mode)
     file_path = directory.nil? ? file : [directory, file].join('/')
     mac_xattr = MacXattr.new
-    detail_string += mac_xattr.get_macxattr(file_path) + delimiter
-    detail_string += file_stat.nlink.to_s.rjust(nlink_length) + delimiter
-    detail_string += Etc.getpwuid(file_stat.uid).name.rjust(owner_name_length) + delimiter * 2
-    detail_string += Etc.getgrgid(file_stat.gid).name.rjust(group_name_length) + delimiter * 2
-    detail_string += file_stat.size.to_s.rjust(file_size_length) + delimiter
-    detail_string += get_modified_time_string(file_stat) + delimiter
-    detail_string += file_stat.symlink? ? "#{file} -> #{File.readlink(file_path)}" : file
+    detail_string << mac_xattr.get_macxattr(file_path) + delimiter
+    detail_string << file_stat.nlink.to_s.rjust(nlink_length) + delimiter
+    detail_string << Etc.getpwuid(file_stat.uid).name.ljust(owner_name_length) + delimiter * 2
+    detail_string << Etc.getgrgid(file_stat.gid).name.ljust(group_name_length) + delimiter * 2
+    detail_string << file_stat.size.to_s.rjust(file_size_length) + delimiter
+    detail_string << get_modified_time_string(file_stat) + delimiter
+    detail_string << (file_stat.symlink? ? "#{file} -> #{File.readlink(file_path)}" : file)
 
     puts detail_string
   end
 end
 
-def get_max_length_nlink(file_stat_hash)
-  file_stat_with_max_nlink = file_stat_hash.max_by { |_file, file_stat| file_stat.nlink }.last
+def get_max_length_nlink(file_stats)
+  file_stat_with_max_nlink = file_stats.max_by { |_file, file_stat| file_stat.nlink }.last
   file_stat_with_max_nlink.nlink.to_s.length
 end
 
-def get_max_length_owner_name(file_stat_hash)
-  file_stat_with_longest_owner_name = file_stat_hash.max_by { |_file, file_stat| Etc.getpwuid(file_stat.uid).name.to_s.length }.last
+def get_max_length_owner_name(file_stats)
+  file_stat_with_longest_owner_name = file_stats.max_by { |_file, file_stat| Etc.getpwuid(file_stat.uid).name.to_s.length }.last
   Etc.getpwuid(file_stat_with_longest_owner_name.uid).name.to_s.length
 end
 
-def get_max_length_group_name(file_stat_hash)
-  file_stat_with_longest_group_name = file_stat_hash.max_by { |_file, file_stat| Etc.getgrgid(file_stat.gid).name }.last
+def get_max_length_group_name(file_stats)
+  file_stat_with_longest_group_name = file_stats.max_by { |_file, file_stat| Etc.getgrgid(file_stat.gid).name }.last
   Etc.getgrgid(file_stat_with_longest_group_name.gid).name.to_s.length
 end
 
-def get_max_length_file_size(file_stat_hash)
-  file_stat_with_max_file_size = file_stat_hash.max_by { |_file, file_stat| file_stat.size }.last
+def get_max_length_file_size(file_stats)
+  file_stat_with_max_file_size = file_stats.max_by { |_file, file_stat| file_stat.size }.last
   file_stat_with_max_file_size.size.to_s.length
 end
 
@@ -183,11 +177,9 @@ def get_permission_attr_str(permission_bits)
     PermissionMask::WRITABLE => 'w',
     PermissionMask::EXECUTABLE => 'x'
   }
-  permission_str = ''
-  permission_masks.each do |mask, attribute|
-    permission_str += mask & permission_bits != 0 ? attribute : '-'
+  permission_masks.each_with_object(+'') do |(mask, attr), permission_str|
+    permission_str << (mask & permission_bits != 0 ? attr : '-')
   end
-  permission_str
 end
 
 def get_file_type_char(mode)
