@@ -39,12 +39,13 @@ def main
   existent_targets, noexistent_targets = targets.partition { |target| File.exist?(target) }
   directories, files = existent_targets.partition { |target| File.ftype(target) == 'directory' }
   sorted_files = sort_with_reverse_option(files, opt_params['r'])
+  sorted_directories = sort_with_reverse_option(directories, opt_params['r'])
 
   noexistent_targets.each { |target| puts "ls: #{target}: No such file or directory" }
 
   call_disp_functions(sorted_files, opt_params['l'])
 
-  directories.each do |directory|
+  sorted_directories.each do |directory|
     puts "\n#{directory}:" if targets.size > 1
     entries = get_entries(directory, opt_params['a'])
     sorted_entries = sort_with_reverse_option(entries, opt_params['r'])
