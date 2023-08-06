@@ -42,25 +42,25 @@ def main
 
   noexistent_targets.each { |target| puts "ls: #{target}: No such file or directory" }
 
-  call_disp_functions(sorted_files, opt_params['l'])
+  display(sorted_files, opt_params['l'])
 
   sorted_directories.each do |directory|
     puts "\n#{directory}:" if targets.size > 1
     entries = get_entries(directory, opt_params['a'])
     sorted_entries = sort_with_reverse_option(entries, opt_params['r'])
-    call_disp_functions(sorted_entries, opt_params['l'], directory)
+    display(sorted_entries, opt_params['l'], directory)
   end
 end
 
-def call_disp_functions(files, long_format, directory = nil)
+def display(files, long_format, directory = nil)
   if long_format
-    display_with_long_format(files, directory)
+    display_long(files, directory)
   else
-    display(files)
+    display_short(files)
   end
 end
 
-def display(files)
+def display_short(files)
   return if files.empty?
 
   max_bytes_filename = files.max_by(&:bytesize).bytesize
@@ -94,7 +94,7 @@ def sort_with_reverse_option(array, reverse)
   reverse ? array.sort.reverse : array.sort
 end
 
-def display_with_long_format(files, directory)
+def display_long(files, directory)
   file_stats = generate_file_stat_hash(files, directory)
   output_total_block_size(file_stats) unless directory.nil?
   output_with_detail_info(file_stats, directory)
