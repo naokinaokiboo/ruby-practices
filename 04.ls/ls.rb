@@ -114,10 +114,10 @@ end
 def output_with_detail_info(file_stats, directory)
   return if file_stats.empty?
 
-  nlink_length = get_max_length_nlink(file_stats)
+  nlink_length = file_stats.map { |_, stat| stat.nlink }.max.to_s.length
   owner_name_length = get_max_length_owner_name(file_stats)
   group_name_length = get_max_length_group_name(file_stats)
-  file_size_length = get_max_length_file_size(file_stats)
+  file_size_length = file_stats.map { |_, stat| stat.size }.max.to_s.length
 
   delimiter = ' '
   file_stats.each do |file, file_stat|
@@ -137,11 +137,6 @@ def output_with_detail_info(file_stats, directory)
   end
 end
 
-def get_max_length_nlink(file_stats)
-  file_stat_with_max_nlink = file_stats.max_by { |_file, file_stat| file_stat.nlink }.last
-  file_stat_with_max_nlink.nlink.to_s.length
-end
-
 def get_max_length_owner_name(file_stats)
   file_stat_with_longest_owner_name = file_stats.max_by { |_file, file_stat| Etc.getpwuid(file_stat.uid).name.to_s.length }.last
   Etc.getpwuid(file_stat_with_longest_owner_name.uid).name.to_s.length
@@ -150,11 +145,6 @@ end
 def get_max_length_group_name(file_stats)
   file_stat_with_longest_group_name = file_stats.max_by { |_file, file_stat| Etc.getgrgid(file_stat.gid).name }.last
   Etc.getgrgid(file_stat_with_longest_group_name.gid).name.to_s.length
-end
-
-def get_max_length_file_size(file_stats)
-  file_stat_with_max_file_size = file_stats.max_by { |_file, file_stat| file_stat.size }.last
-  file_stat_with_max_file_size.size.to_s.length
 end
 
 def get_modified_time_string(file_stat)
