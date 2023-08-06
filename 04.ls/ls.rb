@@ -6,7 +6,6 @@ require 'etc'
 require 'macxattr' # mac拡張属性取得用の拡張ライブラリ
 
 MAX_COLUMNS = 3
-TERMINAL_WIDTH = `tput cols`.to_i
 DIGITS_OCTAL_TO_BINARY = 3
 
 module FileType
@@ -66,7 +65,8 @@ def display(files)
 
   max_bytes_filename = files.max_by(&:bytesize).bytesize
 
-  num_of_columns = MAX_COLUMNS.downto(1).find { |n| max_bytes_filename * n + (n - 1) <= TERMINAL_WIDTH }
+  terminal_width = `tput cols`.to_i
+  num_of_columns = MAX_COLUMNS.downto(1).find { |n| max_bytes_filename * n + (n - 1) <= terminal_width }
   num_of_rows = (files.size / num_of_columns.to_f).ceil
 
   matrix = files.each_slice(num_of_rows).to_a
