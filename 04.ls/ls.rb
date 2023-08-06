@@ -6,7 +6,6 @@ require 'etc'
 require 'macxattr' # mac拡張属性取得用の拡張ライブラリ
 
 MAX_COLUMNS = 3
-TERMINAL_WIDTH = `tput cols`.to_i
 DIGITS_OCTAL_TO_BINARY = 3
 
 module FileType
@@ -39,33 +38,35 @@ def main
   existent_targets, noexistent_targets = targets.partition { |target| File.exist?(target) }
   directories, files = existent_targets.partition { |target| File.ftype(target) == 'directory' }
   sorted_files = sort_with_reverse_option(files, opt_params['r'])
+  sorted_directories = sort_with_reverse_option(directories, opt_params['r'])
 
   noexistent_targets.each { |target| puts "ls: #{target}: No such file or directory" }
 
-  call_disp_functions(sorted_files, opt_params['l'])
+  display(sorted_files, opt_params['l'])
 
-  directories.each do |directory|
+  sorted_directories.each do |directory|
     puts "\n#{directory}:" if targets.size > 1
     entries = get_entries(directory, opt_params['a'])
     sorted_entries = sort_with_reverse_option(entries, opt_params['r'])
-    call_disp_functions(sorted_entries, opt_params['l'], directory)
+    display(sorted_entries, opt_params['l'], directory)
   end
 end
 
-def call_disp_functions(files, long_format, directory = nil)
+def display(files, long_format, directory = nil)
   if long_format
-    display_with_long_format(files, directory)
+    display_long(files, directory)
   else
-    display(files)
+    display_short(files)
   end
 end
 
-def display(files)
+def display_short(files)
   return if files.empty?
 
   max_bytes_filename = files.max_by(&:bytesize).bytesize
 
-  num_of_columns = MAX_COLUMNS.downto(1).find { |n| max_bytes_filename * n + (n - 1) <= TERMINAL_WIDTH }
+  terminal_width = `tput cols`.to_i
+  num_of_columns = MAX_COLUMNS.downto(1).find { |n| max_bytes_filename * n + (n - 1) <= terminal_width }
   num_of_rows = (files.size / num_of_columns.to_f).ceil
 
   matrix = files.each_slice(num_of_rows).to_a
@@ -89,11 +90,11 @@ def get_entries(directory, disp_all)
   Dir.entries(directory).delete_if { |entry| !disp_all && entry[0] == '.' }.sort
 end
 
-def sort_with_reverse_option(array, reverse)
-  reverse ? array.sort.reverse : array.sort
+def sort_with_reverse_option(entries, reverse)
+  reverse ? entries.sort.reverse : entries.sort
 end
 
-def display_with_long_format(files, directory)
+def display_long(files, directory)
   file_stats = generate_file_stat_hash(files, directory)
   output_total_block_size(file_stats) unless directory.nil?
   output_with_detail_info(file_stats, directory)
@@ -113,32 +114,26 @@ end
 def output_with_detail_info(file_stats, directory)
   return if file_stats.empty?
 
-  nlink_length = get_max_length_nlink(file_stats)
+  nlink_length = file_stats.map { |_, stat| stat.nlink }.max.to_s.length
   owner_name_length = get_max_length_owner_name(file_stats)
   group_name_length = get_max_length_group_name(file_stats)
-  file_size_length = get_max_length_file_size(file_stats)
+  file_size_length = file_stats.map { |_, stat| stat.size }.max.to_s.length
 
   delimiter = ' '
   file_stats.each do |file, file_stat|
-    detail_string = +get_file_type_char(file_stat.mode)
-    detail_string << get_perission_str(file_stat.mode)
     file_path = directory.nil? ? file : [directory, file].join('/')
-    mac_xattr = MacXattr.new
-    detail_string << mac_xattr.get_macxattr(file_path) + delimiter
-    detail_string << file_stat.nlink.to_s.rjust(nlink_length) + delimiter
-    detail_string << Etc.getpwuid(file_stat.uid).name.ljust(owner_name_length) + delimiter * 2
-    detail_string << Etc.getgrgid(file_stat.gid).name.ljust(group_name_length) + delimiter * 2
-    detail_string << file_stat.size.to_s.rjust(file_size_length) + delimiter
-    detail_string << get_modified_time_string(file_stat) + delimiter
-    detail_string << (file_stat.symlink? ? "#{file} -> #{File.readlink(file_path)}" : file)
-
-    puts detail_string
+    puts([
+      get_file_type_char(file_stat.mode),
+      get_perission_str(file_stat.mode),
+      MacXattr.new.get_macxattr(file_path) + delimiter,
+      file_stat.nlink.to_s.rjust(nlink_length) + delimiter,
+      Etc.getpwuid(file_stat.uid).name.ljust(owner_name_length) + delimiter * 2,
+      Etc.getgrgid(file_stat.gid).name.ljust(group_name_length) + delimiter * 2,
+      file_stat.size.to_s.rjust(file_size_length) + delimiter,
+      get_modified_time_string(file_stat) + delimiter,
+      file_stat.symlink? ? [file, ' -> ', File.readlink(file_path)].join : file
+    ].join)
   end
-end
-
-def get_max_length_nlink(file_stats)
-  file_stat_with_max_nlink = file_stats.max_by { |_file, file_stat| file_stat.nlink }.last
-  file_stat_with_max_nlink.nlink.to_s.length
 end
 
 def get_max_length_owner_name(file_stats)
@@ -149,11 +144,6 @@ end
 def get_max_length_group_name(file_stats)
   file_stat_with_longest_group_name = file_stats.max_by { |_file, file_stat| Etc.getgrgid(file_stat.gid).name }.last
   Etc.getgrgid(file_stat_with_longest_group_name.gid).name.to_s.length
-end
-
-def get_max_length_file_size(file_stats)
-  file_stat_with_max_file_size = file_stats.max_by { |_file, file_stat| file_stat.size }.last
-  file_stat_with_max_file_size.size.to_s.length
 end
 
 def get_modified_time_string(file_stat)
