@@ -90,8 +90,8 @@ def get_entries(directory, disp_all)
   Dir.entries(directory).delete_if { |entry| !disp_all && entry[0] == '.' }.sort
 end
 
-def sort_with_reverse_option(array, reverse)
-  reverse ? array.sort.reverse : array.sort
+def sort_with_reverse_option(entries, reverse)
+  reverse ? entries.sort.reverse : entries.sort
 end
 
 def display_long(files, directory)
