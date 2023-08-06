@@ -121,19 +121,18 @@ def output_with_detail_info(file_stats, directory)
 
   delimiter = ' '
   file_stats.each do |file, file_stat|
-    detail_string = +get_file_type_char(file_stat.mode)
-    detail_string << get_perission_str(file_stat.mode)
     file_path = directory.nil? ? file : [directory, file].join('/')
-    mac_xattr = MacXattr.new
-    detail_string << mac_xattr.get_macxattr(file_path) + delimiter
-    detail_string << file_stat.nlink.to_s.rjust(nlink_length) + delimiter
-    detail_string << Etc.getpwuid(file_stat.uid).name.ljust(owner_name_length) + delimiter * 2
-    detail_string << Etc.getgrgid(file_stat.gid).name.ljust(group_name_length) + delimiter * 2
-    detail_string << file_stat.size.to_s.rjust(file_size_length) + delimiter
-    detail_string << get_modified_time_string(file_stat) + delimiter
-    detail_string << (file_stat.symlink? ? "#{file} -> #{File.readlink(file_path)}" : file)
-
-    puts detail_string
+    puts([
+      get_file_type_char(file_stat.mode),
+      get_perission_str(file_stat.mode),
+      MacXattr.new.get_macxattr(file_path) + delimiter,
+      file_stat.nlink.to_s.rjust(nlink_length) + delimiter,
+      Etc.getpwuid(file_stat.uid).name.ljust(owner_name_length) + delimiter * 2,
+      Etc.getgrgid(file_stat.gid).name.ljust(group_name_length) + delimiter * 2,
+      file_stat.size.to_s.rjust(file_size_length) + delimiter,
+      get_modified_time_string(file_stat) + delimiter,
+      file_stat.symlink? ? [file, ' -> ', File.readlink(file_path)].join : file
+    ].join)
   end
 end
 
