@@ -27,6 +27,7 @@ def generate_counters(count_flags)
     files.each_with_object([]) do |file, counters|
       counters << { exist: false } and next unless File.exist?(file)
       counters << { exist: true, is_dir: true } and next if File.ftype(file) == 'directory'
+
       counters << generate_counter(File.read(file), count_flags, file)
     end
   end
@@ -34,7 +35,7 @@ end
 
 def generate_counter(contents, count_flags, name = nil)
   {
-    name: name,
+    name:,
     exist: true,
     is_dir: false,
     lines: count_flags[:l] ? contents.lines.size : nil,
@@ -60,7 +61,8 @@ def display(counters, count_flags)
   counters.each do |counter|
     puts "wc: #{counter[:name]}: open: No such file or directory" or next unless counter[:exist]
     puts "wc: #{counter[:name]}: read: Is a directory" or next if counter[:is_dir]
-    puts "#{generate_formatted_counter(counter, count_flags).join(' ')}"
+
+    puts " #{generate_formatted_counter(counter, count_flags).join(' ')}"
   end
 end
 
