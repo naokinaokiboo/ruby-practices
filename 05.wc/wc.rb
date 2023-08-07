@@ -74,9 +74,9 @@ def generate_formatted_counter(counter, count_flags)
   formatted_counter << counter[:name]
 end
 
-def format_counted_value(value)
-  str_value = value.to_s
-  str_value.size >= MIN_DISP_DIGITS ? str_value : str_value.rjust(MIN_DISP_DIGITS)
+def format_counted_value(count_value)
+  count_value_str = count_value.to_s
+  count_value_str.size >= MIN_DISP_DIGITS ? count_value_str : count_value_str.rjust(MIN_DISP_DIGITS)
 end
 
 main
