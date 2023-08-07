@@ -25,8 +25,8 @@ def generate_counters(count_flags)
   else
     files = ARGV
     files.each_with_object([]) do |file, counters|
-      counters << { exist: false } and next unless File.exist?(file)
-      counters << { exist: true, is_dir: true } and next if File.ftype(file) == 'directory'
+      counters << { name: file, exist: false } and next unless File.exist?(file)
+      counters << { name: file, exist: true, is_dir: true } and next if File.ftype(file) == 'directory'
 
       counters << generate_counter(File.read(file), count_flags, file)
     end
