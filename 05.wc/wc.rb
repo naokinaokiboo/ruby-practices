@@ -76,7 +76,7 @@ end
 
 def format_counted_value(count_value)
   count_value_str = count_value.to_s
-  count_value_str.size >= MIN_DISP_DIGITS ? count_value_str : count_value_str.rjust(MIN_DISP_DIGITS)
+  count_value_str.rjust([MIN_DISP_DIGITS, count_value_str.size].max)
 end
 
 main
