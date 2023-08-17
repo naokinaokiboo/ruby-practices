@@ -39,7 +39,7 @@ def generate_counter(contents, count_flags, name = nil)
     exist: true,
     is_dir: false,
     lines: count_flags[:l] ? contents.lines.size : nil,
-    words: count_flags[:w] ? contents.scan(/\s+/).size : nil,
+    words: count_flags[:w] ? contents.split(/\s+/).delete_if(&:empty?).size : nil,
     bytes: count_flags[:c] ? contents.bytesize : nil
   }
 end
