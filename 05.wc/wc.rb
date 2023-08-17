@@ -7,7 +7,7 @@ MIN_DISP_DIGITS = 7
 
 def main
   opt_params = ARGV.getopts('lwc')
-  count_all = opt_params.values.uniq.size == 1
+  count_all = opt_params.values.all? { |v| v == false }
   count_flags = {
     l: count_all ? true : opt_params['l'],
     w: count_all ? true : opt_params['w'],
