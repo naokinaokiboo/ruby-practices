@@ -42,30 +42,30 @@ class TestFrame < Test::Unit::TestCase
     assert_equal 30, frame3.base_score
   end
 
-  test '#first_pinsは1投目の本数を返す' do
+  test '#first_shotは1投目の本数を返す' do
     frame1 = Frame.new(%w[9 1])
-    assert_equal 9, frame1.first_pins
+    assert_equal 9, frame1.first_shot
 
     frame2 = Frame.new(%w[X])
-    assert_equal 10, frame2.first_pins
+    assert_equal 10, frame2.first_shot
   end
 
-  test '#second_pinsは2投目の本数を返す' do
+  test '#second_shotは2投目の本数を返す' do
     frame1 = Frame.new(%w[9 1])
-    assert_equal 1, frame1.second_pins
+    assert_equal 1, frame1.second_shot
 
     frame2 = Frame.new(%w[0 10])
-    assert_equal 10, frame2.second_pins
+    assert_equal 10, frame2.second_shot
   end
 
-  test '#second_pinsは10フレーム目でなくストライクの場合、nilを返す' do
+  test '#second_shotは10フレーム目でなくストライクの場合、nilを返す' do
     frame1 = Frame.new(%w[X])
-    assert_equal nil, frame1.second_pins
+    assert_equal nil, frame1.second_shot
   end
 
-  test '#second_pinsは10フレーム目でストライクの場合、2投目の本数を返す' do
+  test '#second_shotは10フレーム目でストライクの場合、2投目の本数を返す' do
     frame1 = Frame.new(%w[X X X])
-    assert_equal 10, frame1.second_pins
+    assert_equal 10, frame1.second_shot
   end
 
   test '#strike?はフレームの1投目が"X"の場合、trueを返す' do

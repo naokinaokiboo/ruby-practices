@@ -53,15 +53,15 @@ class Game
 
   def strike_bonus(frame_no, next_frame, after_next_frame)
     if frame_no == NUM_OF_FRAMES - 1
-      next_frame.first_pins + next_frame.second_pins
+      next_frame.first_shot + next_frame.second_shot
     elsif next_frame.strike?
-      next_frame.first_pins + after_next_frame.first_pins
+      next_frame.first_shot + after_next_frame.first_shot
     else
       next_frame.base_score
     end
   end
 
   def spare_bonus(next_frame)
-    next_frame.first_pins
+    next_frame.first_shot
   end
 end

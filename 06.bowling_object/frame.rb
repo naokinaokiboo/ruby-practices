@@ -13,11 +13,11 @@ class Frame
     @shots.sum
   end
 
-  def first_pins
+  def first_shot
     @shots[0]
   end
 
-  def second_pins
+  def second_shot
     @shots[1]
   end
 
