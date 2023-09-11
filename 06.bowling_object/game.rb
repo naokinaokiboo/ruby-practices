@@ -8,8 +8,8 @@ class Game
   def initialize(score)
     @frames = []
     marks = score.split(',')
-    generate_marks_grouped_by_frame(marks).each.with_index(1) do |frame_no, marks_in_frame|
-      @frames << Frame.new(frame_no, marks_in_frame)
+    generate_marks_grouped_by_frame(marks).each do |marks_in_frame|
+      @frames << Frame.new(marks_in_frame)
     end
   end
 
