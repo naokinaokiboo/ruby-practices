@@ -13,6 +13,12 @@ class Game
     end
   end
 
+  def calculate_total_score
+    (0..NUM_OF_FRAMES - 1).inject(0) do |result, frame_idx|
+      result + calculate_frame_score(frame_idx + 1, @frames[frame_idx, 3])
+    end
+  end
+
   private
 
   def generate_marks_grouped_by_frame(marks)
@@ -31,5 +37,31 @@ class Game
 
   def join_to_last_frame(grouped_marks)
     [*grouped_marks[..(NUM_OF_FRAMES - 2)], grouped_marks[(NUM_OF_FRAMES - 1)..].flatten]
+  end
+
+  def calculate_frame_score(frame_no, (target_frame, next_frame, after_next_frame))
+    return target_frame.base_score if frame_no == NUM_OF_FRAMES
+
+    if target_frame.strike?
+      target_frame.base_score + strike_bonus(frame_no, next_frame, after_next_frame)
+    elsif target_frame.spare?
+      target_frame.base_score + spare_bonus(next_frame)
+    else
+      target_frame.base_score
+    end
+  end
+
+  def strike_bonus(frame_no, next_frame, after_next_frame)
+    if frame_no == NUM_OF_FRAMES - 1
+      next_frame.first_pins + next_frame.second_pins
+    elsif next_frame.strike?
+      next_frame.first_pins + after_next_frame.first_pins
+    else
+      next_frame.base_score
+    end
+  end
+
+  def spare_bonus(next_frame)
+    next_frame.first_pins
   end
 end
