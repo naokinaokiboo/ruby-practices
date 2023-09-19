@@ -2,9 +2,9 @@
 
 require_relative './frame'
 
-NUM_OF_FRAMES = 10
-
 class Game
+  NUM_OF_FRAMES = 10
+
   def initialize(score)
     @frames = []
     marks = score.split(',')

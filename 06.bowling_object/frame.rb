@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-MAX_PINS = 10
-
 class Frame
+  MAX_PINS = 10
+
   def initialize(score_marks)
     @shots = score_marks.map do |score_mark|
       score_mark == 'X' ? MAX_PINS : score_mark.to_i
