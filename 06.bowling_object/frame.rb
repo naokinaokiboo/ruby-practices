@@ -5,7 +5,7 @@ class Frame
 
   def initialize(score_marks)
     @shots = score_marks.map do |score_mark|
-      score_mark == 'X' ? MAX_PINS : score_mark.to_i
+      Frame.strike_mark?(score_mark) ? MAX_PINS : score_mark.to_i
     end
   end
 
@@ -29,5 +29,9 @@ class Frame
     return false if strike?
 
     @shots[0] + @shots[1] == MAX_PINS
+  end
+
+  def self.strike_mark?(mark)
+    mark == 'X'
   end
 end

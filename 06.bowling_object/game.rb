@@ -22,7 +22,7 @@ class Game
 
   def generate_marks_grouped_by_frame(marks)
     marks_grouped_by_strike_or_not =
-      marks.slice_when { |left, right| left == 'X' || right == 'X' }
+      marks.slice_when { |left, right| Frame.strike_mark?(left) || Frame.strike_mark?(right) }
 
     marks_grouped_by_frame =
       marks_grouped_by_strike_or_not.flat_map { |subset_marks| subset_marks.each_slice(2).to_a }
