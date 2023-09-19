@@ -60,7 +60,7 @@ class TestFrame < Test::Unit::TestCase
 
   test '#second_shotは10フレーム目でなくストライクの場合、nilを返す' do
     frame1 = Frame.new(%w[X])
-    assert_equal nil, frame1.second_shot
+    assert_nil frame1.second_shot
   end
 
   test '#second_shotは10フレーム目でストライクの場合、2投目の本数を返す' do
@@ -70,38 +70,38 @@ class TestFrame < Test::Unit::TestCase
 
   test '#strike?はフレームの1投目が"X"の場合、trueを返す' do
     frame1 = Frame.new(%w[X])
-    assert_equal true, frame1.strike?
+    assert frame1.strike?
 
     frame2 = Frame.new(%w[X 4 5])
-    assert_equal true, frame2.strike?
+    assert frame2.strike?
   end
 
   test '#strike?はフレームの1投目が"X"以外の場合、falseを返す' do
     frame1 = Frame.new(%w[9 1])
-    assert_equal false, frame1.strike?
+    refute frame1.strike?
   end
 
   test '#spare?は1投目と2投目の合計が10の場合、trueを返す' do
     frame1 = Frame.new(%w[9 1])
-    assert_equal true, frame1.spare?
+    assert frame1.spare?
 
     frame2 = Frame.new(%w[0 10])
-    assert_equal true, frame2.spare?
+    assert frame2.spare?
 
     frame3 = Frame.new(%w[5 5 5])
-    assert_equal true, frame3.spare?
+    assert frame3.spare?
   end
 
   test '#spare?は最初の1投目が"X"の場合、falseを返す' do
     frame1 = Frame.new(%w[X])
-    assert_equal false, frame1.spare?
+    refute frame1.spare?
   end
 
   test '#spare?は1投目と2投目の合計が10でない場合、falseを返す' do
     frame1 = Frame.new(%w[8 1])
-    assert_equal false, frame1.spare?
+    refute frame1.spare?
 
     frame2 = Frame.new(%w[4 3 3])
-    assert_equal false, frame2.spare?
+    refute frame2.spare?
   end
 end
