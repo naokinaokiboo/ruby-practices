@@ -35,7 +35,7 @@ class Game
   end
 
   def join_to_last_frame(grouped_marks)
-    [*grouped_marks[..(NUM_OF_FRAMES - 2)], grouped_marks[(NUM_OF_FRAMES - 1)..].flatten]
+    [*grouped_marks[..8], grouped_marks[9..].flatten]
   end
 
   def calculate_frame_score(frame_no, (target_frame, next_frame, after_next_frame))
