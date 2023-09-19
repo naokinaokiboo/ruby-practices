@@ -6,11 +6,12 @@ class Game
   NUM_OF_FRAMES = 10
 
   def initialize(score)
-    @marks = score.split(',')
+    @score = score
   end
 
   def calculate_total_score
-    frames = generate_marks_by_frame(@marks).map do |marks_in_frame|
+    marks = @score.split(',')
+    frames = generate_marks_by_frame(marks).map do |marks_in_frame|
       Frame.new(marks_in_frame)
     end
 
