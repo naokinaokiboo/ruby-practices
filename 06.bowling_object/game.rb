@@ -13,8 +13,8 @@ class Game
   end
 
   def calculate_total_score
-    (0..NUM_OF_FRAMES - 1).inject(0) do |result, frame_idx|
-      result + calculate_frame_score(frame_idx + 1, @frames[frame_idx, 3])
+    (0..NUM_OF_FRAMES - 1).sum do |frame_idx|
+      calculate_frame_score(frame_idx + 1, @frames[frame_idx, 3])
     end
   end
 
