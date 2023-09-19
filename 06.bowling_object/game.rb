@@ -10,7 +10,7 @@ class Game
   end
 
   def calculate_total_score
-    frames = generate_marks_grouped_by_frame(@marks).map do |marks_in_frame|
+    frames = generate_marks_by_frame(@marks).map do |marks_in_frame|
       Frame.new(marks_in_frame)
     end
 
@@ -21,14 +21,14 @@ class Game
 
   private
 
-  def generate_marks_grouped_by_frame(marks)
-    marks_grouped_by_strike_or_not =
+  def generate_marks_by_frame(marks)
+    marks_by_strike_or_not =
       marks.slice_when { |left, right| Frame.strike_mark?(left) || Frame.strike_mark?(right) }
 
-    marks_grouped_by_frame =
-      marks_grouped_by_strike_or_not.flat_map { |subset_marks| subset_marks.each_slice(2).to_a }
+    marks_by_frame =
+      marks_by_strike_or_not.flat_map { |subset_marks| subset_marks.each_slice(2).to_a }
 
-    [*marks_grouped_by_frame[..8], marks_grouped_by_frame[9..].flatten]
+    [*marks_by_frame[..8], marks_by_frame[9..].flatten]
   end
 
   def calculate_frame_score(frame_no, target_frame, next_frame = nil, after_next_frame = nil)
