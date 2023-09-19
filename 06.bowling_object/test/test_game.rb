@@ -4,9 +4,6 @@ require 'test/unit'
 require_relative '../game'
 
 class TestGame < Test::Unit::TestCase
-  setup do
-    @game = Game.new('')
-  end
 
   test '#calculate_total_scoreは、トータルスコアを返す' do
     assert_equal 139, Game.new('6,3,9,0,0,3,8,2,7,3,X,9,1,8,0,X,6,4,5').calculate_total_score
