@@ -6,10 +6,9 @@ class Game
   NUM_OF_FRAMES = 10
 
   def initialize(score)
-    @frames = []
     marks = score.split(',')
-    generate_marks_grouped_by_frame(marks).each do |marks_in_frame|
-      @frames << Frame.new(marks_in_frame)
+    @frames = generate_marks_grouped_by_frame(marks).map do |marks_in_frame|
+      Frame.new(marks_in_frame)
     end
   end
 
