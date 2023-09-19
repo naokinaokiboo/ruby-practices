@@ -27,15 +27,7 @@ class Game
     marks_grouped_by_frame =
       marks_grouped_by_strike_or_not.flat_map { |subset_marks| subset_marks.each_slice(2).to_a }
 
-    if marks_grouped_by_frame.size > NUM_OF_FRAMES
-      join_to_last_frame(marks_grouped_by_frame)
-    else
-      marks_grouped_by_frame
-    end
-  end
-
-  def join_to_last_frame(grouped_marks)
-    [*grouped_marks[..8], grouped_marks[9..].flatten]
+    [*marks_grouped_by_frame[..8], marks_grouped_by_frame[9..].flatten]
   end
 
   def calculate_frame_score(frame_no, (target_frame, next_frame, after_next_frame))
