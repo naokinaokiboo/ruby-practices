@@ -14,7 +14,7 @@ class Game
 
   def calculate_total_score
     (0..NUM_OF_FRAMES - 1).sum do |frame_idx|
-      calculate_frame_score(frame_idx + 1, @frames[frame_idx, 3])
+      calculate_frame_score(frame_idx + 1, *@frames[frame_idx, 3])
     end
   end
 
@@ -30,7 +30,7 @@ class Game
     [*marks_grouped_by_frame[..8], marks_grouped_by_frame[9..].flatten]
   end
 
-  def calculate_frame_score(frame_no, (target_frame, next_frame, after_next_frame))
+  def calculate_frame_score(frame_no, target_frame, next_frame = nil, after_next_frame = nil)
     return target_frame.base_score if frame_no == NUM_OF_FRAMES
 
     if target_frame.strike?
