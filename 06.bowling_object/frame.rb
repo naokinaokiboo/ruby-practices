@@ -3,6 +3,10 @@
 class Frame
   MAX_PINS = 10
 
+  def self.strike_mark?(mark)
+    mark == 'X'
+  end
+
   def initialize(score_marks)
     @shots = score_marks.map do |score_mark|
       Frame.strike_mark?(score_mark) ? MAX_PINS : score_mark.to_i
@@ -55,9 +59,5 @@ class Frame
 
   def spare_bonus(next_frame)
     next_frame.first_shot
-  end
-
-  def self.strike_mark?(mark)
-    mark == 'X'
   end
 end
