@@ -13,8 +13,10 @@ class Game
       Frame.new(marks_in_frame)
     end
 
-    (0..9).sum do |frame_idx|
-      calculate_frame_score(frame_idx, *frames[frame_idx, 3])
+    frames.each_with_index.sum do |frame, i|
+      next_frame = frames[i + 1]
+      after_next_frame = frames[i + 2]
+      frame.calculate_score(next_frame, after_next_frame)
     end
   end
 
@@ -28,31 +30,5 @@ class Game
       marks_by_strike_or_not.flat_map { |subset_marks| subset_marks.each_slice(2).to_a }
 
     [*marks_by_frame[..8], marks_by_frame[9..].flatten]
-  end
-
-  def calculate_frame_score(frame_idx, target_frame, next_frame = nil, after_next_frame = nil)
-    return target_frame.base_score if frame_idx == 9
-
-    if target_frame.strike?
-      target_frame.base_score + strike_bonus(frame_idx, next_frame, after_next_frame)
-    elsif target_frame.spare?
-      target_frame.base_score + spare_bonus(next_frame)
-    else
-      target_frame.base_score
-    end
-  end
-
-  def strike_bonus(frame_idx, next_frame, after_next_frame)
-    if frame_idx == 8
-      next_frame.first_shot + next_frame.second_shot
-    elsif next_frame.strike?
-      next_frame.first_shot + after_next_frame.first_shot
-    else
-      next_frame.base_score
-    end
-  end
-
-  def spare_bonus(next_frame)
-    next_frame.first_shot
   end
 end
