@@ -14,7 +14,7 @@ class Game
     end
 
     (0..9).sum do |frame_idx|
-      calculate_frame_score(frame_idx + 1, *frames[frame_idx, 3])
+      calculate_frame_score(frame_idx, *frames[frame_idx, 3])
     end
   end
 
@@ -30,11 +30,11 @@ class Game
     [*marks_by_frame[..8], marks_by_frame[9..].flatten]
   end
 
-  def calculate_frame_score(frame_no, target_frame, next_frame = nil, after_next_frame = nil)
-    return target_frame.base_score if frame_no == 10
+  def calculate_frame_score(frame_idx, target_frame, next_frame = nil, after_next_frame = nil)
+    return target_frame.base_score if frame_idx == 9
 
     if target_frame.strike?
-      target_frame.base_score + strike_bonus(frame_no, next_frame, after_next_frame)
+      target_frame.base_score + strike_bonus(frame_idx, next_frame, after_next_frame)
     elsif target_frame.spare?
       target_frame.base_score + spare_bonus(next_frame)
     else
@@ -42,8 +42,8 @@ class Game
     end
   end
 
-  def strike_bonus(frame_no, next_frame, after_next_frame)
-    if frame_no == 9
+  def strike_bonus(frame_idx, next_frame, after_next_frame)
+    if frame_idx == 8
       next_frame.first_shot + next_frame.second_shot
     elsif next_frame.strike?
       next_frame.first_shot + after_next_frame.first_shot
