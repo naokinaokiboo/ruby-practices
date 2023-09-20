@@ -3,8 +3,6 @@
 require_relative './frame'
 
 class Game
-  NUM_OF_FRAMES = 10
-
   def initialize(score)
     @score = score
   end
@@ -15,7 +13,7 @@ class Game
       Frame.new(marks_in_frame)
     end
 
-    (0..NUM_OF_FRAMES - 1).sum do |frame_idx|
+    (0..9).sum do |frame_idx|
       calculate_frame_score(frame_idx + 1, *frames[frame_idx, 3])
     end
   end
@@ -33,7 +31,7 @@ class Game
   end
 
   def calculate_frame_score(frame_no, target_frame, next_frame = nil, after_next_frame = nil)
-    return target_frame.base_score if frame_no == NUM_OF_FRAMES
+    return target_frame.base_score if frame_no == 10
 
     if target_frame.strike?
       target_frame.base_score + strike_bonus(frame_no, next_frame, after_next_frame)
@@ -45,7 +43,7 @@ class Game
   end
 
   def strike_bonus(frame_no, next_frame, after_next_frame)
-    if frame_no == NUM_OF_FRAMES - 1
+    if frame_no == 9
       next_frame.first_shot + next_frame.second_shot
     elsif next_frame.strike?
       next_frame.first_shot + after_next_frame.first_shot
