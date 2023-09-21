@@ -13,6 +13,20 @@ class Frame
     end
   end
 
+  def calculate_score(next_frame, after_next_frame)
+    return base_score if next_frame.nil? && after_next_frame.nil?
+
+    if strike?
+      base_score + strike_bonus(next_frame, after_next_frame)
+    elsif spare?
+      base_score + spare_bonus(next_frame)
+    else
+      base_score
+    end
+  end
+
+  protected
+
   def base_score
     @shots.sum
   end
@@ -29,22 +43,12 @@ class Frame
     @shots[0] == MAX_PINS
   end
 
+  private
+
   def spare?
     return false if strike?
 
     @shots[0] + @shots[1] == MAX_PINS
-  end
-
-  def calculate_score(next_frame, after_next_frame)
-    return base_score if next_frame.nil? && after_next_frame.nil?
-
-    if strike?
-      base_score + strike_bonus(next_frame, after_next_frame)
-    elsif spare?
-      base_score + spare_bonus(next_frame)
-    else
-      base_score
-    end
   end
 
   def strike_bonus(next_frame, after_next_frame)
