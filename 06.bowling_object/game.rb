@@ -24,7 +24,7 @@ class Game
 
   def generate_marks_by_frame(marks)
     marks_sliced_after_strike =
-      marks.slice_when { |left, _right| Frame.strike_mark?(left) }
+      marks.slice_after { |mark| Frame.strike_mark?(mark) }
 
     marks_by_frame =
       marks_sliced_after_strike.flat_map { |subset_marks| subset_marks.each_slice(2).to_a }
