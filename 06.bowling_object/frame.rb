@@ -44,9 +44,7 @@ class Frame
   private
 
   def spare?
-    return false if strike?
-
-    @shots[0] + @shots[1] == 10
+    !strike? && @shots[0..1].sum == 10
   end
 
   def strike_bonus(next_frame, after_next_frame)
