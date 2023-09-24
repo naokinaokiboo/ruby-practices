@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
 class Frame
-  MAX_PINS = 10
-
   def self.strike_mark?(mark)
     mark == 'X'
   end
 
   def initialize(score_marks)
     @shots = score_marks.map do |score_mark|
-      Frame.strike_mark?(score_mark) ? MAX_PINS : score_mark.to_i
+      Frame.strike_mark?(score_mark) ? 10 : score_mark.to_i
     end
   end
 
@@ -40,7 +38,7 @@ class Frame
   end
 
   def strike?
-    @shots[0] == MAX_PINS
+    @shots[0] == 10
   end
 
   private
@@ -48,7 +46,7 @@ class Frame
   def spare?
     return false if strike?
 
-    @shots[0] + @shots[1] == MAX_PINS
+    @shots[0] + @shots[1] == 10
   end
 
   def strike_bonus(next_frame, after_next_frame)
