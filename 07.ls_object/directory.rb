@@ -10,7 +10,7 @@ class Directory
   end
 
   def generate_list_content(opt_param)
-    @entries = Dir.entries(@path).map { |entry| Entry.new(@path, entry) }
+    @entries = Dir.entries(@path).map { |entry| Entry.new([@path, entry].join('/'), entry) }
     FormatterFactory.create(opt_param).generate_formatted_content(self, opt_param)
   end
 end
