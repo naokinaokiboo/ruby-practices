@@ -9,7 +9,7 @@ class Entry
   include FileType
   include FilePermission
 
-  attr_reader :path
+  attr_reader :path, :display_name
 
   def initialize(path, display_name = nil)
     @path = path
