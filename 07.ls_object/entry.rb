@@ -21,7 +21,7 @@ class Entry
 
   def permission = get_perission(file_stat.mode)
 
-  def macxattr = MacXattr.new.get_macxattr(@ath)
+  def macxattr = MacXattr.new.get_macxattr(@path)
 
   def nlink = file_stat.nlink
 
