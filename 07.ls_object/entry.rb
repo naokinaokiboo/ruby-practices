@@ -9,6 +9,8 @@ class Entry
   include FileType
   include FilePermission
 
+  attr_reader :path
+
   def initialize(path, display_name = nil)
     @path = path
     @display_name = display_name || path
@@ -19,7 +21,7 @@ class Entry
 
   def permission = get_perission(file_stat.mode)
 
-  def macxattr = MacXattr.new.get_macxattr(@path)
+  def macxattr = MacXattr.new.get_macxattr(@ath)
 
   def nlink = file_stat.nlink
 
@@ -32,7 +34,7 @@ class Entry
   def modified_time = file_stat.mtime
 
   def symbolic_link
-    symbolic_link? ? File.readlink(@path) : nil
+    symbolic_link? ? File.readlink(path) : nil
   end
 
   def symbolic_link? = file_stat.symlink?
