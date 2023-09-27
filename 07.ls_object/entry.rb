@@ -12,7 +12,7 @@ class Entry
   def initialize(path, display_name = nil)
     @path = path
     @display_name = display_name || path
-    @file_stat = File.lstat(path)
+    @file_stat = File.lstat(path) if File.exist?(path)
   end
 
   def file_type = get_file_type(file_stat.mode)
