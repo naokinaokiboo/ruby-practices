@@ -9,9 +9,9 @@ class Entry
   include FileType
   include FilePermission
 
-  def initialize(path, display_name)
+  def initialize(path, display_name = nil)
     @path = path
-    @display_name = display_name
+    @display_name = display_name || path
     @file_stat = File.lstat(path)
   end
 
