@@ -19,7 +19,7 @@ class Entry
 
   def permission = get_perission(file_stat.mode)
 
-  def macxattr = MacXattr.new.get_macxattr(full_path)
+  def macxattr = MacXattr.new.get_macxattr(@path)
 
   def nlink = file_stat.nlink
 
@@ -32,7 +32,7 @@ class Entry
   def modified_time = file_stat.mtime
 
   def symbolic_link
-    symbolic_link? ? File.readlink(full_path) : nil
+    symbolic_link? ? File.readlink(@path) : nil
   end
 
   def symbolic_link? = file_stat.symlink?
