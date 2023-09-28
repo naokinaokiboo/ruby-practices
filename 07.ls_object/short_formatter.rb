@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ShortFormatter
-  MAX_COLUMNS = 3
+  MAX_NUM_OF_COLUMNS = 3
 
   def initialize(entries)
     @entries = entries
@@ -12,7 +12,7 @@ class ShortFormatter
 
     max_bytes_of_name = display_names.max_by(&:bytesize).bytesize
     terminal_width = `tput cols`.to_i
-    num_of_columns = MAX_COLUMNS.downto(1).find { |n| max_bytes_of_name * n + (n - 1) <= terminal_width }
+    num_of_columns = MAX_NUM_OF_COLUMNS.downto(1).find { |n| max_bytes_of_name * n + (n - 1) <= terminal_width }
     num_of_rows = (display_names.size / num_of_columns.to_f).ceil
 
     matrix = display_names.each_slice(num_of_rows).to_a
