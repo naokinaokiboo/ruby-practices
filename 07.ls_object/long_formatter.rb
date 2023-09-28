@@ -15,18 +15,17 @@ class LongFormatter
     delimiter = ' '
     result_content = ["total #{total_blocks}"]
     entries.each_with_object(result_content) do |entry, result|
-      result.push(
-        [
-          entry.file_type,
-          entry.permission,
-          entry.macxattr + delimiter,
-          entry.nlink.to_s.rjust(nlink_length) + delimiter,
-          entry.owner_name.ljust(owner_name_length) + delimiter * 2,
-          entry.group_name.ljust(group_name_length) + delimiter * 2,
-          entry.file_size.to_s.rjust(file_size_length) + delimiter,
-          get_modified_time_string(entry.modified_time) + delimiter,
-          entry.symbolic_link? ? [entry.display_name, ' -> ', entry.symbolic_link].join : entry.display_name
-        ].join)
+      result.push([
+        entry.file_type,
+        entry.permission,
+        entry.macxattr + delimiter,
+        entry.nlink.to_s.rjust(nlink_length) + delimiter,
+        entry.owner_name.ljust(owner_name_length) + delimiter * 2,
+        entry.group_name.ljust(group_name_length) + delimiter * 2,
+        entry.file_size.to_s.rjust(file_size_length) + delimiter,
+        get_modified_time_string(entry.modified_time) + delimiter,
+        entry.symbolic_link? ? [entry.display_name, ' -> ', entry.symbolic_link].join : entry.display_name
+      ].join)
     end.join("\n")
   end
 
