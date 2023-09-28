@@ -5,6 +5,7 @@ require_relative 'optional_parameter'
 require_relative 'non_existent_container'
 require_relative 'unrelated_file_container'
 require_relative 'directory'
+require_relative 'formatter_factory'
 
 def main
   opt_param = OptionalParameter.new
@@ -25,16 +26,17 @@ def main
 
   result =
     containers.each_with_object([]).with_index do |(container, result), index|
+      container.generate_entries(opt_param)
       result << "#{container.path}:" if container.instance_of?(Directory)
-      result << container.generate_list_content(opt_param)
+      result << FormatterFactory.create(container, opt_param).generate_formatted_content
       result << "\n" if !container.instance_of?(NonExistentContainer) && index != containers.size - 1
     end
 
   puts result
 end
 
-def sort_with_reverse_option(items, reverse)
-  reverse ? items.sort.reverse : items.sort
+def sort_with_reverse_option(paths, reverse)
+  reverse ? paths.sort.reverse : paths.sort
 end
 
 main
