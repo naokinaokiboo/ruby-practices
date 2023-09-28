@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
 require_relative 'entry'
+require_relative 'statistics'
 
 class UnrelatedFileContainer
-  attr_reader :entries
+  include Statistics
+
+  attr_reader :entries, :disp_total
 
   def initialize(file_paths)
     @paths = file_paths
+    @disp_total = false
   end
 
   def generate_entries(opt_param)

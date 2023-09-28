@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
 require_relative 'entry'
+require_relative 'statistics'
 
 class Directory
-  attr_reader :entries, :path
+  include Statistics
+
+  attr_reader :entries, :disp_total, :path
 
   def initialize(directory_path)
     @path = directory_path
+    @disp_total = true
   end
 
   def generate_entries(opt_param)

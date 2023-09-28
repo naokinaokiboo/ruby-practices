@@ -9,7 +9,7 @@ class FormatterFactory
     return NonExistentFormatter.new(container.entries) if container.instance_of?(NonExistentContainer)
 
     if opt_param.long_format?
-      LongFormatter.new(container.entries)
+      LongFormatter.new(container.entries, container.generate_statistics, container.disp_total)
     else
       ShortFormatter.new(container.entries)
     end
