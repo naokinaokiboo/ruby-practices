@@ -44,4 +44,4 @@ class LS
   end
 end
 
-puts LS.new().generate_content
+puts LS.new.generate_content
