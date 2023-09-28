@@ -12,6 +12,6 @@ class NonExistentContainer
 
   def generate_list_content(opt_param)
     @entries = @paths.map { |path| Entry.new(path) }
-    FormatterFactory.create(opt_param, non_existent: true).generate_formatted_content(self, opt_param)
+    FormatterFactory.create(self, opt_param).generate_formatted_content
   end
 end

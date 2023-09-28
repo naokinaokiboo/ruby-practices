@@ -3,8 +3,12 @@
 class ShortFormatter
   MAX_COLUMNS = 3
 
-  def generate_formatted_content(container, opt_param)
-    display_names = generate_diplay_names(container, opt_param)
+  def initialize(entries)
+    @entries = entries
+  end
+
+  def generate_formatted_content
+    display_names = entries.map(&:display_name)
 
     max_bytes_of_name = display_names.max_by(&:bytesize).bytesize
     terminal_width = `tput cols`.to_i
@@ -25,17 +29,7 @@ class ShortFormatter
 
   private
 
-  def generate_diplay_names(container, opt_param)
-    display_names = container.entries.map(&:display_name)
-    filtered_names =
-      if opt_param.show_all?
-        display_names
-      else
-        display_names.reject { |name| name[0] == '.' }
-      end
-
-    opt_param.sort_reverse? ? filtered_names.sort.reverse : filtered_names.sort
-  end
+  attr_reader :entries
 
   # 半角英数字以外のファイル名でも表示が崩れないための対応
   def ljust_for_mbchar(str, width)

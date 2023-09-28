@@ -5,9 +5,13 @@ require_relative 'long_formatter'
 require_relative 'short_formatter'
 
 class FormatterFactory
-  def self.create(opt_param, non_existent: false)
-    return NonExistentFormatter.new if non_existent
+  def self.create(container, opt_param)
+    return NonExistentFormatter.new(container.entries) if container.instance_of?(NonExistentContainer)
 
-    opt_param.long_format? ? LongFormatter.new : ShortFormatter.new
+    if opt_param.long_format?
+      LongFormatter.new(container.entries)
+    else
+      ShortFormatter.new(container.entries)
+    end
   end
 end
