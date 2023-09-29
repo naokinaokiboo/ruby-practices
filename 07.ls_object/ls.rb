@@ -8,9 +8,9 @@ require_relative 'directory'
 require_relative 'formatter_factory'
 
 class LS
-  def initialize
-    @opt_param = OptionalParameter.new
-    @paths = ARGV.empty? ? [Dir.pwd] : ARGV.sort
+  def initialize(opt_param, paths)
+    @opt_param = opt_param
+    @paths = paths
   end
 
   def generate_content
@@ -48,4 +48,8 @@ class LS
   end
 end
 
-puts LS.new.generate_content
+if __FILE__ == $PROGRAM_NAME
+  opt_param = OptionalParameter.new
+  paths = ARGV.empty? ? [Dir.pwd] : ARGV
+  puts LS.new(opt_param, paths).generate_content
+end
