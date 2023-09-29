@@ -104,11 +104,13 @@ class TestShortFormatter < Test::Unit::TestCase
       Gemfile.lock
       directory.rb
       entry.rb
+      extconf.rb
       file_permission.rb
       file_type.rb
       formatter_factory.rb
       long_formatter.rb
       ls.rb
+      macxattr.c
       non_existent_container.rb
       non_existent_formatter.rb
       optional_parameter.rb
@@ -137,11 +139,13 @@ class TestShortFormatter < Test::Unit::TestCase
       Gemfile.lock
       directory.rb
       entry.rb
+      extconf.rb
       file_permission.rb
       file_type.rb
       formatter_factory.rb
       long_formatter.rb
       ls.rb
+      macxattr.c
       non_existent_container.rb
       non_existent_formatter.rb
       optional_parameter.rb
@@ -166,9 +170,10 @@ class TestShortFormatter < Test::Unit::TestCase
       test                        formatter_factory.rb
       statistics.rb               file_type.rb
       short_formatter.rb          file_permission.rb
-      optional_parameter.rb       entry.rb
-      non_existent_formatter.rb   directory.rb
-      non_existent_container.rb   Gemfile.lock
+      optional_parameter.rb       extconf.rb
+      non_existent_formatter.rb   entry.rb
+      non_existent_container.rb   directory.rb
+      macxattr.c                  Gemfile.lock
       ls.rb                       Gemfile
     TEXT
 
@@ -188,8 +193,9 @@ class TestShortFormatter < Test::Unit::TestCase
       statistics.rb               formatter_factory.rb        .rubocop.yml
       short_formatter.rb          file_type.rb                .gitkeep
       optional_parameter.rb       file_permission.rb          ..
-      non_existent_formatter.rb   entry.rb                    .
-      non_existent_container.rb   directory.rb
+      non_existent_formatter.rb   extconf.rb                  .
+      non_existent_container.rb   entry.rb
+      macxattr.c                  directory.rb
     TEXT
 
     opt_param = TestDoubleOptionalParameter.new(opt_a: true, opt_r: true, opt_l: false)
