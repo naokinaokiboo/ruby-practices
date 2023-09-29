@@ -14,10 +14,14 @@ class LS
   end
 
   def generate_content
-    generate_containers.each_with_object([]) do |container, result|
+    containers = generate_containers
+    containers.each_with_object([]) do |container, result|
       container.generate_entries(opt_param)
-      result << "\n#{container.path}:" if container.instance_of?(Directory)
-      result << FormatterFactory.create(container, opt_param).generate_formatted_content
+      content = []
+      content << "#{container.path}:\n" if container.instance_of?(Directory) && containers.size > 1
+      content << FormatterFactory.create(container, opt_param).generate_formatted_content
+      content << "\n" unless container.instance_of?(NonExistentContainer)
+      result << content.join
     end.join("\n")
   end
 
