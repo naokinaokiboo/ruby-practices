@@ -11,7 +11,7 @@ class ShortFormatter
     display_names = entries.map(&:display_name)
 
     max_bytes_of_name = display_names.max_by(&:bytesize).bytesize
-    terminal_width = `tput cols`.to_i
+    terminal_width = current_terminal_width
     num_of_columns = MAX_NUM_OF_COLUMNS.downto(1).find { |n| max_bytes_of_name * n + (n - 1) <= terminal_width }
     num_of_rows = (display_names.size / num_of_columns.to_f).ceil
 
@@ -35,5 +35,19 @@ class ShortFormatter
   def ljust_for_mbchar(str, width)
     num_of_mbchar = str.split('').count { |char| char.match?(/[^ -~｡-ﾟ]/) }
     str.ljust(width - num_of_mbchar)
+  end
+
+  def current_terminal_width
+    if @terminal_width_for_test
+      # 自動テスト用の分岐 : set_terminal_widhで幅を設定後、1度だけ設定した幅を使用する
+      @terminal_width_for_test.tap { @terminal_width_for_test = nil }
+    else
+      `tput cols`.to_i
+    end
+  end
+
+  # 自動テスト用メソッド（ターミナルの幅を仮設定する）
+  def terminal_width_for_test(width)
+    @terminal_width_for_test = width
   end
 end
