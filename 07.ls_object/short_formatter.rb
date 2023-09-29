@@ -23,7 +23,7 @@ class ShortFormatter
     matrix.transpose.map do |subset_names|
       subset_names.map do |name|
         ljust_for_mbchar(name, max_bytes_of_name) unless name.nil?
-      end.join(' ')
+      end.join(' ').rstrip
     end.join("\n")
   end
 
