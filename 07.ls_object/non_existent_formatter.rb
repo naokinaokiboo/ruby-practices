@@ -8,6 +8,6 @@ class NonExistentFormatter
   def generate_formatted_content
     @entries.map do |entry|
       "ls: #{entry.path}: No such file or directory"
-    end.sort.join("\n")
+    end.join("\n")
   end
 end

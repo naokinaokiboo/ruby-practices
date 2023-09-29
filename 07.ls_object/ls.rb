@@ -15,23 +15,19 @@ class LS
 
   def generate_content
     containers = generate_containers
-    containers.each_with_object([]) do |container, result|
+    containers.map do |container|
       container.generate_entries(opt_param)
-      content = []
-      content << "#{container.path}:\n" if container.instance_of?(Directory) && containers.size > 1
-      content << FormatterFactory.create(container, opt_param).generate_formatted_content
-      content << "\n" unless container.instance_of?(NonExistentContainer)
-      result << content.join
+      subset_content = []
+      subset_content << "#{container.path}:\n" if container.instance_of?(Directory) && containers.size > 1
+      subset_content << FormatterFactory.create(container, opt_param).generate_formatted_content
+      subset_content << "\n" unless container.instance_of?(NonExistentContainer)
+      subset_content.join
     end.join("\n")
   end
 
   private
 
   attr_reader :opt_param, :paths
-
-  def sort_with_reverse_option(paths, reverse)
-    reverse ? paths.sort.reverse : paths.sort
-  end
 
   def generate_containers
     existent_paths, nonexistent_paths = paths.partition { |path| File.exist?(path) }
@@ -45,6 +41,10 @@ class LS
     sorted_directory_paths.each_with_object(containers) do |directory_path, result|
       result << Directory.new(directory_path)
     end
+  end
+
+  def sort_with_reverse_option(paths, reverse)
+    reverse ? paths.sort.reverse : paths.sort
   end
 end
 

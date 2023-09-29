@@ -5,14 +5,14 @@ require 'optparse'
 class OptionalParameter
   def initialize
     optional_args = ARGV.getopts('arl')
-    @show_all = optional_args['a']
-    @sort_reverse = optional_args['r']
-    @long_format = optional_args['l']
+    @opt_a = optional_args['a']
+    @opt_r = optional_args['r']
+    @opt_l = optional_args['l']
   end
 
-  def show_all? = @show_all
+  def show_all? = @opt_a
 
-  def sort_reverse? = @sort_reverse
+  def sort_reverse? = @opt_r
 
-  def long_format? = @long_format
+  def long_format? = @opt_l
 end
