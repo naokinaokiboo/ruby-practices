@@ -15,11 +15,7 @@ class UnrelatedFileContainer
 
   def generate_entries(opt_param)
     row_entries = @paths.map { |path| Entry.new(path) }
-    @entries =
-      if opt_param.sort_reverse?
-        row_entries.sort_by(&:display_name).reverse
-      else
-        row_entries.sort_by(&:display_name)
-      end
+    sorted_entries = row_entries.sort_by(&:display_name)
+    @entries = opt_param.sort_reverse? ? sorted_entries.reverse : sorted_entries
   end
 end

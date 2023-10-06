@@ -30,10 +30,7 @@ class Directory
   end
 
   def sort_entries(unsorted_entries, opt_param)
-    if opt_param.sort_reverse?
-      unsorted_entries.sort_by(&:display_name).reverse
-    else
-      unsorted_entries.sort_by(&:display_name)
-    end
+    sorted_entries = unsorted_entries.sort_by(&:display_name)
+    opt_param.sort_reverse? ? sorted_entries.reverse : sorted_entries
   end
 end
