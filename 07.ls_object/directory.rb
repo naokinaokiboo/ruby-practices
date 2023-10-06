@@ -25,7 +25,7 @@ class Directory
     if opt_param.show_all?
       unfiltered_entries
     else
-      unfiltered_entries.reject { |entry| entry.display_name[0] == '.' }
+      unfiltered_entries.reject { |entry| entry.display_name.start_with?('.') }
     end
   end
 
