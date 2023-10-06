@@ -36,8 +36,8 @@ class LS
     sorted_directory_paths = sort_with_reverse_option(directory_paths, opt_param.sort_reverse?)
 
     containers = []
-    containers << NonExistentContainer.new(nonexistent_paths) if nonexistent_paths.any?
-    containers << UnrelatedFileContainer.new(sorted_file_paths) if sorted_file_paths.any?
+    containers << NonExistentContainer.new(nonexistent_paths) unless nonexistent_paths.empty?
+    containers << UnrelatedFileContainer.new(sorted_file_paths) unless sorted_file_paths.empty?
     sorted_directory_paths.each_with_object(containers) do |directory_path, result|
       result << Directory.new(directory_path)
     end
